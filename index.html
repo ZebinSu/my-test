@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Interaction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .output-box {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+            min-height: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Text Prediction</h1>
+        <input type="text" id="textInput" placeholder="Enter text here">
+        <button onclick="submitText()">Submit</button>
+        <div class="output-box" id="outputBox">Output will appear here</div>
+    </div>
+
+    <script>
+        function submitText() {
+            const inputText = document.getElementById('textInput').value;
+            const outputBox = document.getElementById('outputBox');
+
+            if (!inputText) {
+                outputBox.textContent = 'Please enter some text!';
+                return;
+            }
+
+            // API request setup
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            const raw = JSON.stringify({ text: inputText });
+
+            const requestOptions = {
+                method: "POST",
+                headers: myHeaders,
+                body: raw,
+                redirect: "follow"
+            };
+
+            fetch("https://fastapi-app-280288253402.us-central1.run.app/predict", requestOptions)
+                .then(response => response.text())
+                .then(result => {
+                    outputBox.textContent = `Response: ${result}`;
+                })
+                .catch(error => {
+                    console.error(error);
+                    outputBox.textContent = 'An error occurred while fetching the response.';
+                });
+        }
+    </script>
+</body>
+</html>
